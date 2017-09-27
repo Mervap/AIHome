@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.valera.homeweatherstation.BuildGraphs.LockableScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:fillViewport="false"
+    android:id="@+id/scrollView"
+    android:scrollbars="none"
+    android:background="@drawable/dark_wood">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"></LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:weightSum="1"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:gravity="center_horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="От"
+                        android:id="@+id/textView"
+                        android:textColor="#00FFFF"
+                        android:autoText="false"
+                        android:textSize="60dp" />
+                </LinearLayout>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/dateFrom"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="90dp"
+                    android:textColor="#00FFFF"
+                    android:drawableLeft="@drawable/period"
+                    style="@style/Base.Widget.AppCompat.Spinner.DropDown.ActionBar"
+                    android:background="@drawable/circuit"
+                    android:onClick="showDatePickerDialogFrom" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:gravity="center_horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="До"
+                        android:id="@+id/textView8"
+                        android:textColor="#00FFFF"
+                        android:textIsSelectable="false"
+                        android:textSize="60dp"
+                        android:gravity="center_horizontal" />
+                </LinearLayout>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/dateTo"
+                    android:textSize="90dp"
+                    android:textColor="#00FFFF"
+                    android:drawableLeft="@drawable/period"
+                    style="@style/Base.Widget.AppCompat.Spinner.DropDown.ActionBar"
+                    android:onClick="showDatePickerDialogTo"
+                    android:background="@drawable/circuit" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/display_graphs_for_custom_period"
+                android:textColor="#00FFFF"
+                android:id="@+id/buttonDisplay"
+                android:layout_gravity="center_horizontal"
+            android:onClick="BuildCustomGraphs"
+            android:textSize="45dp" />
+
+        <com.jjoe64.graphview.GraphView
+            android:layout_width="match_parent"
+            android:layout_height="500dip"
+            android:id="@+id/graph_t_outside"
+            android:background="@drawable/invizib" />
+
+        <com.jjoe64.graphview.GraphView
+            android:layout_width="match_parent"
+            android:layout_height="500dip"
+            android:id="@+id/graph_Pressure"
+            android:background="@drawable/invizib" />
+        <com.jjoe64.graphview.GraphView
+            android:layout_width="match_parent"
+            android:layout_height="500dip"
+            android:id="@+id/graph_t_inside"
+            android:background="@drawable/invizib" />
+        <com.jjoe64.graphview.GraphView
+            android:layout_width="match_parent"
+            android:layout_height="500dip"
+            android:id="@+id/graph_Humidity"
+            android:background="@drawable/invizib" />
+
+
+    </LinearLayout>
+</com.example.valera.homeweatherstation.BuildGraphs.LockableScrollView>
