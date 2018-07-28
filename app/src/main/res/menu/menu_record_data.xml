@@ -1,10 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MySqlReader.RecordData">
-        <item android:id="@+id/action_build_last_24_hour" android:title="За сутки"
+        <item android:id="@+id/my_settings" android:title="Настройки"
             android:orderInCategory="100" app:showAsAction="always"
+            android:icon="@drawable/settings_pic"/>
+        <item android:id="@+id/action_build_last_24_hour" android:title="За сутки"
+            android:orderInCategory="101" app:showAsAction="always"
             android:icon="@drawable/day"/>
         <item android:id="@+id/action_build_graphs_for_custom_period" android:title="За период"
-            android:orderInCategory="100" app:showAsAction="always"
+            android:orderInCategory="101" app:showAsAction="always"
             android:icon="@drawable/graph"/>
 </menu>

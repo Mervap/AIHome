@@ -3,11 +3,12 @@ package com.example.valera.homeweatherstation.BuildGraphs;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
@@ -20,6 +21,7 @@ import com.example.valera.homeweatherstation.MySqlReader.ReceiveData;
 import com.example.valera.homeweatherstation.R;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.DataPointInterface;
@@ -34,12 +36,17 @@ import org.json.JSONObject;
 import java.util.Calendar;
 import java.util.Date;
 
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+
 /**
  * Created by Valera on 25.03.2015.
  */
-public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
+public class BuildingGraphsForCustomPeriod extends AppCompatActivity {
 
-    private static String url_get_data = "http://tvv.dd-dns.de/meteo/get_custom_period_data.php";
+    private String domain;
+    private static String url_get_data;
+    private SharedPreferences sPref;
+    private final String URL_DATA = "url";
 
     //Экземпляр класса получения данных
     ReceiveData receivedata = new ReceiveData();
@@ -58,18 +65,27 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
     private static final String TAG_T_OUTSIDE = "t_outside";
     private static final String TAG_PRESSURE = "Pressure";
     private static final String TAG_HUMIDITY = "Humidity";
+    private static final String TAG_HUMIDITY_OUTSIDE = "Humidity_outside";
+    private static final String TAG_MAIN_VENT_FLAP = "main_vent_flap";
+    private static final String TAG_ROOM_VENT_FLAP = "room_vent_flap";
 
     //Границы графиков
     Date date_min;
     Date date_max;
-    Double t_intside_min =0.0;
-    Double t_intside_max =0.0;
-    Double t_outside_min =0.0;
-    Double t_outside_max =0.0;
+    Double t_intside_min = 0.0;
+    Double t_intside_max = 0.0;
+    Double t_outside_min = 0.0;
+    Double t_outside_max = 0.0;
     Double Humidity_min = 0.0;
     Double Humidity_max = 0.0;
     Double Pressure_min = 0.0;
     Double Pressure_max = 0.0;
+    Double Humidity_outside_min = 0.0;
+    Double Humidity_outside_max = 0.0;
+    Double main_vent_flap_min = 0.0;
+    Double main_vent_flap_max = 0.0;
+    Double room_vent_flap_min = 0.0;
+    Double room_vent_flap_max = 0.0;
 
     //Даты по умолчанию
     final Calendar lastWeekDate = Calendar.getInstance();
@@ -86,10 +102,13 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
     DataPoint[] t_outside_pointS;
     DataPoint[] Humidity_pointS;
     DataPoint[] Pressure_pointS;
+    DataPoint[] Humidity_outside_pointS;
+    DataPoint[] main_vent_flap_pointS;
+    DataPoint[] room_vent_flap_pointS;
 
-    String [] dates;
-    boolean equalityYears=false;
-    boolean validateDate=false;
+    String[] dates;
+    boolean equalityYears = false;
+    boolean validateDate = false;
 
     DialogFragment newFragment;
 
@@ -98,6 +117,10 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
         String StringDay;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.custom_graphs);
+
+        sPref = getDefaultSharedPreferences(this);
+        domain = loadUrl();
+        url_get_data = "http://" + domain + getResources().getString(R.string.url_get_custom_period_data);
 
         //Инициализация элементов UI
         Scroll = (ScrollView) findViewById(R.id.scrollView);
@@ -122,24 +145,23 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
         dateFrom.setText(dayFrom + " " + IdentificationMonth(monthFrom) + " " + yearFrom);
         dateTo.setText(dayTo + " " + IdentificationMonth(monthTo) + " " + yearTo);
 
-        ((LockableScrollView)findViewById(R.id.scrollView)).setScrollingEnabled(false);
+        ((LockableScrollView) findViewById(R.id.scrollView)).setScrollingEnabled(false);
     }
 
     //Отображение графиков
     public void BuildCustomGraphs(View view) {
 
-        ((LockableScrollView)findViewById(R.id.scrollView)).setScrollingEnabled(true);
+        ((LockableScrollView) findViewById(R.id.scrollView)).setScrollingEnabled(true);
         //Проверка корректности ввода даты
         boolean result = ValidateData();
 
-        if(result) {
+        if (result) {
             newFragment = new LoadingDialogV1();
             newFragment.show(getFragmentManager(), "Loading");
             dates = getTextFromDatePickerTextView();
             new GetDataFromMySQL().execute();
-        }
-        else{
-            Toast.makeText(BuildingGraphsForCustomPeriod.this, "Интервал задан некорректно" , Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(BuildingGraphsForCustomPeriod.this, "Интервал задан некорректно", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -148,14 +170,20 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
         protected void onPreExecute() {
 
             //Обнуление границ
-            t_intside_min =0.0;
-            t_intside_max =0.0;
-            t_outside_min =0.0;
-            t_outside_max =0.0;
+            t_intside_min = 0.0;
+            t_intside_max = 0.0;
+            t_outside_min = 0.0;
+            t_outside_max = 0.0;
             Humidity_min = 0.0;
             Humidity_max = 0.0;
             Pressure_min = 0.0;
             Pressure_max = 0.0;
+            Humidity_outside_min = 0.0;
+            Humidity_outside_max = 0.0;
+            main_vent_flap_min = 0.0;
+            main_vent_flap_max = 0.0;
+            room_vent_flap_min = 0.0;
+            room_vent_flap_max = 0.0;
             super.onPreExecute();
         }
 
@@ -173,10 +201,13 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
                 t_outside_pointS = new DataPoint[number];
                 Humidity_pointS = new DataPoint[number];
                 Pressure_pointS = new DataPoint[number];
+                Humidity_outside_pointS = new DataPoint[number];
+                main_vent_flap_pointS = new DataPoint[number];
+                room_vent_flap_pointS = new DataPoint[number];
 
                 if (success == 1) {
                     //Цикл для прохода по всем часам
-                    for(hour_data = 0; hour_data<number; hour_data++) {
+                    for (hour_data = 0; hour_data < number; hour_data++) {
 
                         JSONArray dataObj = json.getJSONArray(TAG_DATA + hour_data);
                         JSONObject data = dataObj.getJSONObject(0);
@@ -188,7 +219,7 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
                         String Time[] = DateAndTime[1].split(":");
 
                         Integer Year = new Integer(Date[0]);
-                        Integer Month = new Integer(Date[1])-1;
+                        Integer Month = new Integer(Date[1]) - 1;
                         Integer Day = new Integer(Date[2]);
 
                         Integer Hour = new Integer(Time[0]);
@@ -209,8 +240,8 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
                             date_max = d1;
                             LastDay.set(Year, Month, Day);
                             lastDay = LastDay.get(Calendar.DAY_OF_YEAR);
-                            if(FirstDay.get(Calendar.YEAR)==LastDay.get(Calendar.YEAR)){
-                                equalityYears=true;
+                            if (FirstDay.get(Calendar.YEAR) == LastDay.get(Calendar.YEAR)) {
+                                equalityYears = true;
                             }
                         }
 
@@ -221,7 +252,7 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
                         if (data.getDouble(TAG_T_ISIDE) > t_intside_max) {
                             t_intside_max = data.getDouble(TAG_T_ISIDE);
                         }
-                        if (t_intside_min == 0.0) {
+                        if (t_intside_min == 0.0 && hour_data == 0) {
                             t_intside_min = data.getDouble(TAG_T_ISIDE);
                         }
                         if (data.getDouble(TAG_T_ISIDE) < t_intside_min) {
@@ -235,7 +266,7 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
                         if (data.getDouble(TAG_T_OUTSIDE) > t_outside_max) {
                             t_outside_max = data.getDouble(TAG_T_OUTSIDE);
                         }
-                        if (t_outside_min == 0.0) {
+                        if (t_outside_min == 0.0 && hour_data == 0) {
                             t_outside_min = data.getDouble(TAG_T_OUTSIDE);
                         }
                         if (data.getDouble(TAG_T_OUTSIDE) < t_outside_min) {
@@ -249,7 +280,7 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
                         if (data.getDouble(TAG_HUMIDITY) > Humidity_max) {
                             Humidity_max = data.getDouble(TAG_HUMIDITY);
                         }
-                        if (Humidity_min == 0.0) {
+                        if (Humidity_min == 0.0 && hour_data == 0) {
                             Humidity_min = data.getDouble(TAG_HUMIDITY);
                         }
                         if (data.getDouble(TAG_HUMIDITY) < Humidity_min) {
@@ -263,13 +294,55 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
                         if (data.getDouble(TAG_PRESSURE) > Pressure_max) {
                             Pressure_max = data.getDouble(TAG_PRESSURE);
                         }
-                        if (Pressure_min == 0.0) {
+                        if (Pressure_min == 0.0 && hour_data == 0) {
                             Pressure_min = data.getDouble(TAG_PRESSURE);
                         }
                         if (data.getDouble(TAG_PRESSURE) < Pressure_min) {
                             Pressure_min = data.getDouble(TAG_PRESSURE);
                         }
-                      }
+
+                        //Точки для графика влажности на улице и его границы
+                        DataPoint Humidity_outside_point = new DataPoint(d1, data.getDouble(TAG_HUMIDITY_OUTSIDE));
+                        Humidity_outside_pointS[hour_data] = Humidity_outside_point;
+
+                        if (data.getDouble(TAG_HUMIDITY_OUTSIDE) > Humidity_outside_max) {
+                            Humidity_outside_max = data.getDouble(TAG_HUMIDITY_OUTSIDE);
+                        }
+                        if (Humidity_outside_min == 0.0 && hour_data == 0) {
+                            Humidity_outside_min = data.getDouble(TAG_HUMIDITY_OUTSIDE);
+                        }
+                        if (data.getDouble(TAG_HUMIDITY_OUTSIDE) < Humidity_outside_min) {
+                            Humidity_outside_min = data.getDouble(TAG_HUMIDITY_OUTSIDE);
+                        }
+
+                        //Точки для графика главной вентиляции и его границы
+                        DataPoint main_vent_flap_point = new DataPoint(d1, data.getDouble(TAG_MAIN_VENT_FLAP));
+                        main_vent_flap_pointS[hour_data] = main_vent_flap_point;
+
+                        if (data.getDouble(TAG_MAIN_VENT_FLAP) > main_vent_flap_max) {
+                            main_vent_flap_max = data.getDouble(TAG_MAIN_VENT_FLAP);
+                        }
+                        if (main_vent_flap_min == 0.0 && hour_data == 0) {
+                            main_vent_flap_min = data.getDouble(TAG_MAIN_VENT_FLAP);
+                        }
+                        if (data.getDouble(TAG_MAIN_VENT_FLAP) < main_vent_flap_min) {
+                            main_vent_flap_min = data.getDouble(TAG_MAIN_VENT_FLAP);
+                        }
+
+                        //Точки для графика вентиляции комнаты и его границы
+                        DataPoint room_vent_flap = new DataPoint(d1, data.getDouble(TAG_ROOM_VENT_FLAP));
+                        room_vent_flap_pointS[hour_data] = room_vent_flap;
+
+                        if (data.getDouble(TAG_ROOM_VENT_FLAP) > room_vent_flap_max) {
+                            room_vent_flap_max = data.getDouble(TAG_ROOM_VENT_FLAP);
+                        }
+                        if (room_vent_flap_min == 0.0 && hour_data == 0) {
+                            room_vent_flap_min = data.getDouble(TAG_ROOM_VENT_FLAP);
+                        }
+                        if (data.getDouble(TAG_ROOM_VENT_FLAP) < room_vent_flap_min) {
+                            room_vent_flap_min = data.getDouble(TAG_ROOM_VENT_FLAP);
+                        }
+                    }
 
                     //Запуск главного потока для работы с UI
                     runOnUiThread(new Runnable() {
@@ -289,11 +362,21 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
                             LineGraphSeries<DataPoint> Humidity_series = new LineGraphSeries<DataPoint>(Humidity_pointS);
                             Humidity_series.setColor(Color.GREEN);
 
+                            LineGraphSeries<DataPoint> Humidity_outside_series = new LineGraphSeries<DataPoint>(Humidity_outside_pointS);
+                            Humidity_outside_series.setColor(Color.YELLOW);
+
+                            LineGraphSeries<DataPoint> main_vent_flap_series = new LineGraphSeries<DataPoint>(main_vent_flap_pointS);
+                            main_vent_flap_series.setColor(Color.WHITE);
+
+                            LineGraphSeries<DataPoint> room_vent_flap_series = new LineGraphSeries<DataPoint>(room_vent_flap_pointS);
+                            room_vent_flap_series.setColor(Color.CYAN);
+
                             //Инициализируем графики
                             GraphView graph_t_inside = (GraphView) findViewById(R.id.graph_t_inside);
                             GraphView graph_t_outside = (GraphView) findViewById(R.id.graph_t_outside);
                             GraphView graph_Humidity = (GraphView) findViewById(R.id.graph_Humidity);
                             GraphView graph_Pressure = (GraphView) findViewById(R.id.graph_Pressure);
+                            GraphView graph_Humidity_outside = (GraphView) findViewById(R.id.graph_Humidity_outside);
 
                             //Параметры графика домашней температуры
                             graph_t_inside.getGridLabelRenderer().setNumHorizontalLabels(3);
@@ -304,8 +387,8 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
                             graph_t_inside.getViewport().setMinX(date_min.getTime());
                             graph_t_inside.getViewport().setMaxX(date_max.getTime());
                             graph_t_inside.getViewport().setXAxisBoundsManual(true);
-                            graph_t_inside.getViewport().setMinY(t_intside_min-0.1);
-                            graph_t_inside.getViewport().setMaxY(t_intside_max+0.1);
+                            graph_t_inside.getViewport().setMinY(t_intside_min - 0.1);
+                            graph_t_inside.getViewport().setMaxY(t_intside_max + 0.1);
                             graph_t_inside.getViewport().setYAxisBoundsManual(true);
                             graph_t_inside.setTitle("Температура в доме (°C)");
                             graph_t_inside.setTitleTextSize(25);
@@ -320,8 +403,8 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
                             graph_t_outside.getViewport().setMinX(date_min.getTime());
                             graph_t_outside.getViewport().setMaxX(date_max.getTime());
                             graph_t_outside.getViewport().setXAxisBoundsManual(true);
-                            graph_t_outside.getViewport().setMinY(t_outside_min-0.5);
-                            graph_t_outside.getViewport().setMaxY(t_outside_max+0.5);
+                            graph_t_outside.getViewport().setMinY(t_outside_min - 0.5);
+                            graph_t_outside.getViewport().setMaxY(t_outside_max + 0.5);
                             graph_t_outside.getViewport().setYAxisBoundsManual(true);
                             graph_t_outside.setTitle("Температура на улице (°C)");
                             graph_t_outside.setTitleTextSize(25);
@@ -336,10 +419,10 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
                             graph_Humidity.getViewport().setMinX(date_min.getTime());
                             graph_Humidity.getViewport().setMaxX(date_max.getTime());
                             graph_Humidity.getViewport().setXAxisBoundsManual(true);
-                            graph_Humidity.getViewport().setMinY(Humidity_min-0.5);
-                            graph_Humidity.getViewport().setMaxY(Humidity_max+0.5);
+                            graph_Humidity.getViewport().setMinY(Humidity_min - 0.5);
+                            graph_Humidity.getViewport().setMaxY(Humidity_max + 0.5);
                             graph_Humidity.getViewport().setYAxisBoundsManual(true);
-                            graph_Humidity.setTitle("Влажность в доме (%)");
+                            graph_Humidity.setTitle("Влажность в гараже (%)");
                             graph_Humidity.setTitleTextSize(25);
                             graph_Humidity.setTitleColor(Color.GRAY);
 
@@ -352,31 +435,68 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
                             graph_Pressure.getViewport().setMinX(date_min.getTime());
                             graph_Pressure.getViewport().setMaxX(date_max.getTime());
                             graph_Pressure.getViewport().setXAxisBoundsManual(true);
-                            graph_Pressure.getViewport().setMinY(Pressure_min-0.5);
-                            graph_Pressure.getViewport().setMaxY(Pressure_max+0.5);
+                            graph_Pressure.getViewport().setMinY(Pressure_min - 0.5);
+                            graph_Pressure.getViewport().setMaxY(Pressure_max + 0.5);
                             graph_Pressure.getViewport().setYAxisBoundsManual(true);
                             graph_Pressure.setTitle("Давление (мм.рт.ст.)");
                             graph_Pressure.setTitleTextSize(25);
                             graph_Pressure.setTitleColor(Color.GRAY);
 
+                            //Параметры графика влажности на улице
+                            graph_Humidity_outside.getGridLabelRenderer().setNumHorizontalLabels(3);
+                            graph_Humidity_outside.getGridLabelRenderer().setNumVerticalLabels(5);
+                            graph_Humidity_outside.getGridLabelRenderer().setGridColor(Color.GRAY);
+                            graph_Humidity_outside.getGridLabelRenderer().setHorizontalLabelsColor(Color.GRAY);
+                            graph_Humidity_outside.getGridLabelRenderer().setVerticalLabelsColor(Color.GRAY);
+                            graph_Humidity_outside.getViewport().setMinX(date_min.getTime());
+                            graph_Humidity_outside.getViewport().setMaxX(date_max.getTime());
+                            graph_Humidity_outside.getViewport().setXAxisBoundsManual(true);
+                            graph_Humidity_outside.getViewport().setMinY(Humidity_outside_min - 0.2);
+                            graph_Humidity_outside.getViewport().setMaxY(Humidity_outside_max + 0.2);
+                            graph_Humidity_outside.getViewport().setYAxisBoundsManual(true);
+                            graph_Humidity_outside.setTitle("Влажность на улице (%)");
+                            graph_Humidity_outside.setTitleTextSize(25);
+                            graph_Humidity_outside.setTitleColor(Color.GRAY);
+
+                            //Параметры графика заслонок
+                            graph_Humidity.getGridLabelRenderer().setVerticalLabelsSecondScaleColor(Color.GRAY);
+                            graph_Humidity.getSecondScale().setMinY(Math.max(Math.min(main_vent_flap_min, room_vent_flap_min) - 0.5, 0));
+                            graph_Humidity.getSecondScale().setMaxY(Math.max(main_vent_flap_max, room_vent_flap_max) + 0.5);
+
+                            //Легенда
+                            Humidity_series.setTitle("Влажность");
+                            main_vent_flap_series.setTitle("Гараж");
+                            room_vent_flap_series.setTitle("Комната");
+                            graph_Humidity.getLegendRenderer().setTextColor(Color.GRAY);
+                            graph_Humidity.getLegendRenderer().setTextSize(25);
+                            graph_Humidity.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+                            graph_Humidity.getLegendRenderer().setVisible(true);
+
                             //Устанавливаем параметры меток
-                            SetLableFormater(graph_t_inside, graph_t_outside, graph_Humidity, graph_Pressure, firstDay, lastDay, equalityYears);
+                            SetLableFormater(graph_t_inside, graph_t_outside, graph_Humidity, graph_Pressure, graph_Humidity_outside, firstDay, lastDay, equalityYears);
 
                             //Очищаем и строим графики
                             graph_t_inside.removeAllSeries();
                             graph_t_outside.removeAllSeries();
                             graph_Humidity.removeAllSeries();
                             graph_Pressure.removeAllSeries();
+                            graph_Humidity_outside.removeAllSeries();
+
+                            //graph_Humidity.getSecondScale().removeAllSeries();
 
                             graph_t_inside.addSeries(t_inside_series);
                             graph_t_outside.addSeries(t_outside_series);
                             graph_Humidity.addSeries(Humidity_series);
                             graph_Pressure.addSeries(Pressure_series);
+                            graph_Humidity_outside.addSeries(Humidity_outside_series);
+
+                            graph_Humidity.getSecondScale().addSeries(main_vent_flap_series);
+                            graph_Humidity.getSecondScale().addSeries(room_vent_flap_series);
 
                             //Прокручиваем экран
-                           if(!validateDate){
-                               Scroll.smoothScrollTo(0, 210);
-                           }
+                            if (!validateDate) {
+                                Scroll.smoothScrollTo(0, 210);
+                            }
 
                             //"Слушатель" нажатия на график домашней температуры
                             t_inside_series.setOnDataPointTapListener(new OnDataPointTapListener() {
@@ -389,229 +509,250 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
                             t_outside_series.setOnDataPointTapListener(new OnDataPointTapListener() {
                                 @Override
                                 public void onTap(Series series, DataPointInterface dataPoint) {
-                                    Toast.makeText(BuildingGraphsForCustomPeriod.this, "" + new Date((long)dataPoint.getX()).toString().substring(4,19)+ "\n\t\t" + dataPoint.getY() + "°C", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(BuildingGraphsForCustomPeriod.this, "" + new Date((long) dataPoint.getX()).toString().substring(4, 19) + "\n\t\t" + dataPoint.getY() + "°C", Toast.LENGTH_LONG).show();
                                 }
                             });
                             //"Слушатель" нажатия на график влажности
                             Humidity_series.setOnDataPointTapListener(new OnDataPointTapListener() {
                                 @Override
                                 public void onTap(Series series, DataPointInterface dataPoint) {
-                                    Toast.makeText(BuildingGraphsForCustomPeriod.this, "" + new Date((long)dataPoint.getX()).toString().substring(4,19)+ "\n\t\t" + dataPoint.getY() + "%", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(BuildingGraphsForCustomPeriod.this, "" + new Date((long) dataPoint.getX()).toString().substring(4, 19) + "\n\t\t" + dataPoint.getY() + "%", Toast.LENGTH_LONG).show();
                                 }
                             });
                             //"Слушатель" нажатия на график давления
                             Pressure_series.setOnDataPointTapListener(new OnDataPointTapListener() {
                                 @Override
                                 public void onTap(Series series, DataPointInterface dataPoint) {
-                                    Toast.makeText(BuildingGraphsForCustomPeriod.this, "" + new Date((long)dataPoint.getX()).toString().substring(4,19)+ "\n" + dataPoint.getY() + " мм.рт.ст", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(BuildingGraphsForCustomPeriod.this, "" + new Date((long) dataPoint.getX()).toString().substring(4, 19) + "\n" + dataPoint.getY() + " мм.рт.ст", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                            //"Слушатель" нажатия на график влажности на улице
+                            Humidity_outside_series.setOnDataPointTapListener(new OnDataPointTapListener() {
+                                @Override
+                                public void onTap(Series series, DataPointInterface dataPoint) {
+                                    Toast.makeText(BuildingGraphsForCustomPeriod.this, "" + new Date((long) dataPoint.getX()).toString().substring(4, 19) + "\n" + dataPoint.getY() + " %", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                            //"Слушатель" нажатия на график положения заслонок общее
+                            main_vent_flap_series.setOnDataPointTapListener(new OnDataPointTapListener() {
+                                @Override
+                                public void onTap(Series series, DataPointInterface dataPoint) {
+                                    Toast.makeText(BuildingGraphsForCustomPeriod.this, "" + new Date((long) dataPoint.getX()).toString().substring(4, 19) + "\n" + dataPoint.getY() + "°", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                            //"Слушатель" нажатия на график положения заслонок в комнате
+                            room_vent_flap_series.setOnDataPointTapListener(new OnDataPointTapListener() {
+                                @Override
+                                public void onTap(Series series, DataPointInterface dataPoint) {
+                                    Toast.makeText(BuildingGraphsForCustomPeriod.this, "" + new Date((long) dataPoint.getX()).toString().substring(4, 19) + "\n" + dataPoint.getY() + "°", Toast.LENGTH_LONG).show();
                                 }
                             });
                         }
                     });
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                     public void run() {
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    public void run() {
                         newFragment.dismiss();
-                        Toast.makeText(BuildingGraphsForCustomPeriod.this, "Отсутствуют данные за данный период, выберите другой интервал" , Toast.LENGTH_LONG).show();
+                        Toast.makeText(BuildingGraphsForCustomPeriod.this, "Отсутствуют данные за данный период, выберите другой интервал", Toast.LENGTH_LONG).show();
                     }
                 });
-                }
-                catch (NullPointerException e) {
-                    //Сообщение в случае отсутствия соединения
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            newFragment.dismiss();
-                            AlertDialog.Builder builder = new AlertDialog.Builder(BuildingGraphsForCustomPeriod.this);
-                            builder.setTitle("Внимание!")
-                                    .setMessage("Нет соединения с сервером, попробуйте позже.")
-                                    .setCancelable(false)
-                                    .setPositiveButton("Повторить",
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    dialog.cancel();
-                                                    new GetDataFromMySQL().execute();
-                                                }
-                                            })
-                                    .setNegativeButton("Выход",
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    dialog.cancel();
-                                                    System.exit(0);
-                                                }
-                                            });
-                            AlertDialog alert = builder.create();
-                            alert.show();
-                        }
-                    });
-                }
+            } catch (NullPointerException e) {
+                //Сообщение в случае отсутствия соединения
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        newFragment.dismiss();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(BuildingGraphsForCustomPeriod.this);
+                        builder.setTitle("Внимание!")
+                                .setMessage("Нет соединения с сервером, попробуйте позже.")
+                                .setCancelable(false)
+                                .setPositiveButton("Повторить",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                dialog.cancel();
+                                                new GetDataFromMySQL().execute();
+                                            }
+                                        })
+                                .setNegativeButton("Выход",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                dialog.cancel();
+                                                System.exit(0);
+                                            }
+                                        });
+                        AlertDialog alert = builder.create();
+                        alert.show();
+                    }
+                });
+            }
             return null;
         }
     }
 
-    public static String IdentificationMonth(int month){
-        if(month==0){
+    public static String IdentificationMonth(int month) {
+        if (month == 0) {
             return "Янв";
         }
-        if(month==1){
+        if (month == 1) {
             return "Фев";
         }
-        if(month==2){
+        if (month == 2) {
             return "Мар";
         }
-        if(month==3){
+        if (month == 3) {
             return "Апр";
         }
-        if(month==4){
+        if (month == 4) {
             return "Май";
         }
-        if(month==5){
+        if (month == 5) {
             return "Июн";
         }
-        if(month==6){
+        if (month == 6) {
             return "Июл";
         }
-        if(month==7){
+        if (month == 7) {
             return "Авг";
         }
-        if(month==8){
+        if (month == 8) {
             return "Сен";
         }
-        if(month==9){
+        if (month == 9) {
             return "Окт";
         }
-        if(month==10){
+        if (month == 10) {
             return "Ноя";
         }
-        if(month==11){
+        if (month == 11) {
             return "Дек";
         }
-        return  null;
+        return null;
     }
 
-    public static int IdentificationMonth(String month){
-        if(month.equals("Янв")){
+    public static int IdentificationMonth(String month) {
+        if (month.equals("Янв")) {
             return 0;
         }
-        if(month.equals("Фев")){
+        if (month.equals("Фев")) {
             return 1;
         }
-        if(month.equals("Мар")){
+        if (month.equals("Мар")) {
             return 2;
         }
-        if(month.equals("Апр")){
+        if (month.equals("Апр")) {
             return 3;
         }
-        if(month.equals("Май")){
+        if (month.equals("Май")) {
             return 4;
         }
-        if(month.equals("Июн")){
+        if (month.equals("Июн")) {
             return 5;
         }
-        if(month.equals("Июл")){
+        if (month.equals("Июл")) {
             return 6;
         }
-        if(month.equals("Авг")){
+        if (month.equals("Авг")) {
             return 7;
         }
-        if(month.equals("Сен")){
+        if (month.equals("Сен")) {
             return 8;
         }
-        if(month.equals("Окт")){
+        if (month.equals("Окт")) {
             return 9;
         }
-        if(month.equals("Ноя")){
+        if (month.equals("Ноя")) {
             return 10;
         }
-        if(month.equals("Дек")){
+        if (month.equals("Дек")) {
             return 11;
         }
         return Integer.parseInt(null);
     }
 
     //Установка выбраной пользователем даты
-    public static void setTextOnDatePickerTextView(int year, int month, int day, int id){
+    public static void setTextOnDatePickerTextView(int year, int month, int day, int id) {
 
-        if(id==1) {
+        if (id == 1) {
             dateFrom.setText(day + " " + IdentificationMonth(month) + " " + year);
         }
-        if(id==2) {
+        if (id == 2) {
             dateTo.setText(day + " " + IdentificationMonth(month) + " " + year);
         }
     }
 
     //Считывание установленой даты
-    public static int[] getTextFromDatePickerTextView(int id){
-        if(id==1) {
+    public static int[] getTextFromDatePickerTextView(int id) {
+        if (id == 1) {
             String textDate = ((String) dateFrom.getText());
-            String Date [] = textDate.split(" ");
-            int [] date = new int [3];
-            date[0]= Integer.parseInt(Date[2]);
-            date[1]= IdentificationMonth(Date[1]);
-            date[2]= Integer.parseInt(Date[0]);
+            String Date[] = textDate.split(" ");
+            int[] date = new int[3];
+            date[0] = Integer.parseInt(Date[2]);
+            date[1] = IdentificationMonth(Date[1]);
+            date[2] = Integer.parseInt(Date[0]);
             return date;
         }
-        if(id==2) {
+        if (id == 2) {
             String textDate = ((String) dateTo.getText());
-            String Date [] = textDate.split(" ");
-            int [] date = new int [3];
-            date[0]= Integer.parseInt(Date[2]);
-            date[1]= IdentificationMonth(Date[1]);
-            date[2]= Integer.parseInt(Date[0]);
+            String Date[] = textDate.split(" ");
+            int[] date = new int[3];
+            date[0] = Integer.parseInt(Date[2]);
+            date[1] = IdentificationMonth(Date[1]);
+            date[2] = Integer.parseInt(Date[0]);
             return date;
         }
         return null;
     }
 
-    public static String[] getTextFromDatePickerTextView(){
-        String [] dates = new String[2];
-        int [] i = new int[3];
+    public static String[] getTextFromDatePickerTextView() {
+        String[] dates = new String[2];
+        int[] i = new int[3];
         Calendar c = Calendar.getInstance();
         i = getTextFromDatePickerTextView(1);
-        dates [0] = String.valueOf(i[0]+ "-" + (i[1]+1) + "-" + i[2]);
+        dates[0] = String.valueOf(i[0] + "-" + (i[1] + 1) + "-" + i[2]);
         i = getTextFromDatePickerTextView(2);
         c.set(i[0], i[1], i[2]);
         c.add(Calendar.DAY_OF_YEAR, 1);
         i[0] = c.get(Calendar.YEAR);
-        i[1] = c.get(Calendar.MONTH)+1;
+        i[1] = c.get(Calendar.MONTH) + 1;
         i[2] = c.get(Calendar.DAY_OF_MONTH);
-        dates [1] = String.valueOf(i[0]+ "-" + i[1] + "-" + i[2]);
-       return dates;
+        dates[1] = String.valueOf(i[0] + "-" + i[1] + "-" + i[2]);
+        return dates;
     }
 
     //Проверка корректности даты
-    public boolean ValidateData(){
+    public boolean ValidateData() {
         Calendar dateFrom = Calendar.getInstance();
         Calendar dateTo = Calendar.getInstance();
         Calendar startRecord = Calendar.getInstance();
         startRecord.set(2015, 01, 01);
-        int df[]= getTextFromDatePickerTextView(1);
+        int df[] = getTextFromDatePickerTextView(1);
         dateFrom.set(df[0], df[1], df[2]);
-        int dt[]= getTextFromDatePickerTextView(2);
+        int dt[] = getTextFromDatePickerTextView(2);
         dateTo.set(dt[0], dt[1], dt[2]);
-        if(startRecord.after(dateFrom)){
-            validateDate=true;
+        if (startRecord.after(dateFrom)) {
+            validateDate = true;
+        } else {
+            validateDate = false;
         }
-        else{
-            validateDate=false;
-        }
-        if(dateTo.equals(dateFrom)){
-           return true;
-        }
-        else {
-           return dateTo.after(dateFrom);
+        if (dateTo.equals(dateFrom)) {
+            return true;
+        } else {
+            return dateTo.after(dateFrom);
         }
     }
 
     //Параметры меток графиков
-    public void SetLableFormater(GraphView graph_t_inside, GraphView graph_t_outside, GraphView graph_Humidity, GraphView graph_Pressure, int FirstDay, int LastDay, boolean equalityYears){
-        if(LastDay-FirstDay<2 && equalityYears==true){
+    public void SetLableFormater(GraphView graph_t_inside, GraphView graph_t_outside, GraphView graph_Humidity, GraphView graph_Pressure,
+                                 GraphView graph_Humidity_outside,
+                                 int FirstDay, int LastDay, boolean equalityYears) {
+        if (LastDay - FirstDay < 2 && equalityYears == true) {
 
             graph_t_inside.getGridLabelRenderer().setNumHorizontalLabels(4);
             graph_t_outside.getGridLabelRenderer().setNumHorizontalLabels(4);
             graph_Humidity.getGridLabelRenderer().setNumHorizontalLabels(4);
             graph_Pressure.getGridLabelRenderer().setNumHorizontalLabels(4);
+            graph_Humidity_outside.getGridLabelRenderer().setNumHorizontalLabels(4);
 
             graph_t_inside.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
                 @Override
@@ -621,7 +762,7 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
                         Calendar n = Calendar.getInstance();
                         Date y = n.getTime();
                         y.setTime(m);
-                        return y.toString().substring(10,15)+"0";
+                        return y.toString().substring(10, 15) + "0";
                     } else {
                         // show currency for y values
                         return String.format("%.1f", value).replace(",", ".");
@@ -637,7 +778,7 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
                         Calendar n = Calendar.getInstance();
                         Date y = n.getTime();
                         y.setTime(m);
-                        return y.toString().substring(10,15)+"0";
+                        return y.toString().substring(10, 15) + "0";
                     } else {
                         // show currency for y values
                         return String.format("%.1f", value).replace(",", ".");
@@ -653,7 +794,7 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
                         Calendar n = Calendar.getInstance();
                         Date y = n.getTime();
                         y.setTime(m);
-                        return y.toString().substring(10,15)+"0";
+                        return y.toString().substring(10, 15) + "0";
                     } else {
                         // show currency for y values
                         return String.format("%.1f", value).replace(",", ".");
@@ -669,15 +810,30 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
                         Calendar n = Calendar.getInstance();
                         Date y = n.getTime();
                         y.setTime(m);
-                        return y.toString().substring(10,15)+"0";
+                        return y.toString().substring(10, 15) + "0";
                     } else {
                         // show currency for y values
                         return String.format("%.1f", value).replace(",", ".");
                     }
                 }
             });
-        }
-        else{
+
+            graph_Humidity_outside.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+                @Override
+                public String formatLabel(double value, boolean isValueX) {
+                    if (isValueX) {
+                        Long m = new Long((long) value);
+                        Calendar n = Calendar.getInstance();
+                        Date y = n.getTime();
+                        y.setTime(m);
+                        return y.toString().substring(10, 15) + "0";
+                    } else {
+                        // show currency for y values
+                        return String.format("%.1f", value).replace(",", ".");
+                    }
+                }
+            });
+        } else {
             graph_t_inside.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(BuildingGraphsForCustomPeriod.this) {
                 @Override
                 public String formatLabel(double value, boolean isValueX) {
@@ -725,6 +881,18 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
                     }
                 }
             });
+
+            graph_Humidity_outside.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(BuildingGraphsForCustomPeriod.this) {
+                @Override
+                public String formatLabel(double value, boolean isValueX) {
+                    if (isValueX) {
+                        return super.formatLabel(value, isValueX);
+                    } else {
+                        // show currency for y values
+                        return String.format("%.1f", value).replace(",", ".");
+                    }
+                }
+            });
         }
     }
 
@@ -736,6 +904,11 @@ public class BuildingGraphsForCustomPeriod extends ActionBarActivity {
     public void showDatePickerDialogTo(View v) {
         DialogFragment newFragment = new DatePickerTo();
         newFragment.show(getFragmentManager(), "datePickerTo");
+    }
+
+    public String loadUrl() {
+        String domain = sPref.getString(URL_DATA, "");
+        return domain;
     }
 }
 

@@ -4,11 +4,13 @@ import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +24,7 @@ import com.example.valera.homeweatherstation.BuildGraphs.BuildingGraphsForCustom
 import com.example.valera.homeweatherstation.BuildGraphs.BuildingGraphsLast24Hour;
 import com.example.valera.homeweatherstation.BuildGraphs.LoadingDialogs.LoadingDialogV3;
 import com.example.valera.homeweatherstation.R;
+import com.example.valera.homeweatherstation.Setting.SettingDialog;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.LabelFormatter;
 import com.jjoe64.graphview.Viewport;
@@ -38,7 +41,9 @@ import org.json.JSONObject;
 import java.util.Calendar;
 import java.util.Date;
 
-public class RecordData extends ActionBarActivity {
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+
+public class RecordData extends AppCompatActivity {
 
     //TextView
     TextView t_inside_text;
@@ -56,8 +61,12 @@ public class RecordData extends ActionBarActivity {
     DataPoint[] Pressure_pointS;
 
     // url получения списка данных
-    private String url_get_data = "http://tvv.dd-dns.de/meteo/get_data.php";
-    private String url_get_pressure_data = "http://tvv.dd-dns.de/meteo/get_pressure_data.php";
+    private String domain;
+    private String url_get_data;
+    private String url_get_pressure_data;
+
+    private SharedPreferences sPref;
+    private final String URL_DATA = "url";
 
     // JSON тэги
     private static final String TAG_SUCCESS = "success";
@@ -92,6 +101,15 @@ public class RecordData extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
 
+        sPref = getDefaultSharedPreferences(this);
+        domain = loadUrl();
+        if (domain.equals("")) {
+            domain = "tvv";
+            saveData(domain);
+        }
+        url_get_data = "http://" + domain + getResources().getString(R.string.url_get_data);
+        url_get_pressure_data = "http://" + domain + getResources().getString(R.string.url_get_pressure_data);
+
         layout_visibility = (LinearLayout) findViewById(R.id.layout_visibility);
         layout_visibility.setVisibility(View.INVISIBLE);
 
@@ -117,6 +135,11 @@ public class RecordData extends ActionBarActivity {
             case R.id.action_build_graphs_for_custom_period:
                 intent = new Intent(RecordData.this, BuildingGraphsForCustomPeriod.class);
                 startActivity(intent);
+                return true;
+            case R.id.my_settings:
+                FragmentManager manager = getSupportFragmentManager();
+                SettingDialog myDialogFragment = new SettingDialog();
+                myDialogFragment.show(manager, "SettingDialog");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -152,9 +175,18 @@ public class RecordData extends ActionBarActivity {
         newFragment.show(getFragmentManager(), "Loading");
     }
 
-    public void UpdateInfo(View view) {
+    public void Refresh() {
         LoadingInfo();
+
+        domain = loadUrl();
+        url_get_data = "http://" + domain + getResources().getString(R.string.url_get_data);
+        url_get_pressure_data = "http://" + domain + getResources().getString(R.string.url_get_pressure_data);
+
         new GetDataFromMySQL().execute();
+    }
+
+    public void UpdateInfo(View view) {
+        Refresh();
     }
 
     //Фоновый поток для загрузки данных
@@ -322,8 +354,7 @@ public class RecordData extends ActionBarActivity {
                             });
                         }
                     });
-                }
-                else{
+                } else {
                     runOnUiThread(new Runnable() {
                         public void run() {
                             newFragment.dismiss();
@@ -352,106 +383,126 @@ public class RecordData extends ActionBarActivity {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-            }
-            catch (NullPointerException e) {
+            } catch (NullPointerException e) {
                 //Сообщение в случае отсутствия соединения
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    newFragment.dismiss();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(RecordData.this);
-                    builder.setTitle("Внимание!")
-                            .setMessage("Нет соединения с сервером, попробуйте позже.")
-                            .setCancelable(false)
-                            .setPositiveButton("Повторить",
-                                    new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                            dialog.cancel();
-                                            new GetDataFromMySQL().execute();
-                                        }
-                                    })
-                            .setNegativeButton("Выход",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            dialog.cancel();
-                                            System.exit(0);
-                                        }
-                                    });
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                }
-             });
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        newFragment.dismiss();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(RecordData.this);
+                        builder.setTitle("Внимание!")
+                                .setMessage("Нет соединения с сервером, попробуйте позже.")
+                                .setCancelable(false)
+                                .setPositiveButton("Повторить",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                dialog.cancel();
+                                                new GetDataFromMySQL().execute();
+                                            }
+                                        })
+                                .setNeutralButton("Настройки",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                dialog.cancel();
+                                                FragmentManager manager = getSupportFragmentManager();
+                                                SettingDialog myDialogFragment = new SettingDialog();
+                                                myDialogFragment.show(manager, "SettingDialog");
+                                            }
+                                        })
+                                .setNegativeButton("Выход",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                dialog.cancel();
+                                                System.exit(0);
+                                            }
+                                        });
+                        AlertDialog alert = builder.create();
+                        alert.show();
+                    }
+                });
             }
             return null;
         }
     }
 
-    public void Sunset_Sunrise(int month, int hour, ImageView imageView){
-        if(month==0 || month==11){
-            if(hour>=8 && hour<=16){
+    public void Sunset_Sunrise(int month, int hour, ImageView imageView) {
+        if (month == 0 || month == 11) {
+            if (hour >= 8 && hour <= 16) {
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.sun_with_snow));
             }
-            if(hour<8 || hour>16){
+            if (hour < 8 || hour > 16) {
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.moon));
             }
 
         }
-        if(month==1 || month==9){
-            if(hour>=7 && hour<=17){
-                if(month==1) {
+        if (month == 1 || month == 9) {
+            if (hour >= 7 && hour <= 17) {
+                if (month == 1) {
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.sun_with_snow));
                 }
-                if(month==9) {
+                if (month == 9) {
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.sun_without_snow));
                 }
             }
-            if(hour<7 || hour>17){
+            if (hour < 7 || hour > 17) {
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.moon));
             }
         }
-        if(month==2 || month==8){
-            if(hour>=6 && hour<=18){
-                if(month==2) {
+        if (month == 2 || month == 8) {
+            if (hour >= 6 && hour <= 18) {
+                if (month == 2) {
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.sun_with_snow));
                 }
-                if(month==8) {
+                if (month == 8) {
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.sun_without_snow));
                 }
             }
-            if(hour<6 || hour>18){
+            if (hour < 6 || hour > 18) {
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.moon));
             }
         }
-        if(month==3 || month==4){
-            if(hour>=5 && hour<=19){
+        if (month == 3 || month == 4) {
+            if (hour >= 5 && hour <= 19) {
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.sun_without_snow));
             }
-            if(hour<5 || hour>19){
+            if (hour < 5 || hour > 19) {
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.moon));
             }
         }
-        if(month==5 || month==6){
-            if(hour>=5 && hour<=20){
+        if (month == 5 || month == 6) {
+            if (hour >= 5 && hour <= 20) {
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.sun));
             }
-            if(hour<5 || hour>20){
+            if (hour < 5 || hour > 20) {
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.moon));
             }
         }
-        if(month==7){
-            if(hour>=5 && hour<=19){
+        if (month == 7) {
+            if (hour >= 5 && hour <= 19) {
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.sun));
             }
-            if(hour<5 || hour>19){
+            if (hour < 5 || hour > 19) {
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.moon));
             }
         }
-        if(month==10){
-            if(hour>=7 && hour<=16){
+        if (month == 10) {
+            if (hour >= 7 && hour <= 16) {
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.sun_with_snow));
             }
-            if(hour<7 || hour>16){
+            if (hour < 7 || hour > 16) {
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.moon));
             }
         }
+    }
+
+    public void saveData(String domain) {
+        SharedPreferences.Editor ed = sPref.edit();
+        ed.putString(URL_DATA, domain);
+        ed.commit();
+    }
+
+
+    public String loadUrl() {
+        String domain = sPref.getString(URL_DATA, "");
+        return domain;
     }
 }

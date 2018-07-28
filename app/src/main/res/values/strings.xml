@@ -1,4 +1,9 @@
 <resources>
+    <string name="url_get_data">/meteo/get_data.php</string>
+    <string name="url_get_pressure_data">/meteo/get_pressure_data.php</string>
+    <string name="url_get_last_data">/meteo/get_last_24_hour_data.php</string>
+    <string name="url_get_custom_period_data">/meteo/get_custom_period_data.php</string>
+
     <string name="app_name">HomeWeatherStation</string>
     <string name="button_graphs_last24">Отобразить данные за последние сутки</string>
     <string name="action_build_graphs_for_custom_period">График за произвольный период</string>
@@ -8,6 +13,14 @@
     <string name="now">Сейчас</string>
     <string name="textFrom">От</string>
     <string name="textTo">До</string>
+
+    <string name="firstcon">Для запуска необходимо ввести домен</string>
+    <string name="settings">Настройки</string>
+    <string name="all_good">Данные успешно обновлены</string>
+
+    <string name="waiting">Пожалуйста подождите...</string>
+    <string name="data_error">Нет соединения с сервером или данные некорректны.</string>
+    <string name="ok">Ок</string>
 
     <string-array name="Years">
         <item>2015</item>
