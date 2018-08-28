@@ -30,6 +30,48 @@
         android:hint="Домен"
         android:inputType="textVisiblePassword" />
 
+    <Switch
+        android:id="@+id/switch_mode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Включить ручной режим"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/text_main_vent_flap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Подождите..."
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <SeekBar
+        android:id="@+id/seekBar_main"
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:max="18"
+        android:progress="5" />
+
+    <TextView
+        android:id="@+id/text_room_vent_flap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Подождите..."
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <SeekBar
+        android:id="@+id/seekBar_room"
+        android:layout_width="match_parent"
+        android:layout_height="39dp"
+        android:layout_weight="1"
+        android:max="18"
+        android:progress="0" />
+
     <Button
         android:id="@+id/button"
         style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"

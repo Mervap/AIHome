@@ -45,4 +45,18 @@ public class ReceiveData {
             return null;
         }
     }
+
+    public static void ReceiveData(String url_get_data, int trigger_mode, int main_vent_flap, int room_vent_flap){
+        try {
+            // Список параметров
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("trigger_mode", Integer.toString(trigger_mode)));
+            params.add(new BasicNameValuePair("main_vent_flap", Integer.toString(main_vent_flap)));
+            params.add(new BasicNameValuePair("room_vent_flap", Integer.toString(room_vent_flap)));
+            // получаем информацию по HTTP запросу
+            JSONObject json = jsonParser.makeHttpRequest(url_get_data, "GET", params);
+        }
+        catch (NullPointerException e) {
+        }
+    }
 }

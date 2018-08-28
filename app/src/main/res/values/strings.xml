@@ -3,6 +3,8 @@
     <string name="url_get_pressure_data">/meteo/get_pressure_data.php</string>
     <string name="url_get_last_data">/meteo/get_last_24_hour_data.php</string>
     <string name="url_get_custom_period_data">/meteo/get_custom_period_data.php</string>
+    <string name="url_get_flap_data">/meteo/get_flap_data.php</string>
+    <string name="url_put_flap_data">/meteo/flap_modes.php</string>
 
     <string name="app_name">HomeWeatherStation</string>
     <string name="button_graphs_last24">Отобразить данные за последние сутки</string>
