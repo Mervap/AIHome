@@ -1,0 +1,7 @@
+<resources>
+    <string name="sunOrMoon">Солнце/Луна</string>
+    <string name="home">Дом</string>
+    <string name="water">Капля воды</string>
+    <string name="thermometer">Термометр</string>
+    <string name="barometr">Барометр</string>
+</resources>

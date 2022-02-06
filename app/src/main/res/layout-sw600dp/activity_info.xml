@@ -1,191 +1,188 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:orientation="vertical"
-android:weightSum="1"
-android:background="@drawable/dark_wood">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1">
 
     <LinearLayout
+        android:id="@+id/layout_visibility"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:weightSum="1"
         android:visibility="visible"
-        android:id="@+id/layout_visibility"
-        android:background="@drawable/dark_wood">
+        android:weightSum="1">
 
-    <ImageView
-    android:layout_width="160dp"
-    android:layout_height="160dp"
-    android:id="@+id/imageView"
-    android:onClick="UpdateInfo"
-    android:layout_gravity="center_horizontal" />
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:contentDescription="@string/sunOrMoon"
+            android:onClick="updateInfo" />
 
-        <DigitalClock
+        <TextClock
+            android:id="@+id/TimeClock"
+            style="@style/Base.TextAppearance.AppCompat.Large"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/TimeClock"
             android:layout_gravity="center_horizontal"
-            android:textColor="#00FFFF"
-            android:typeface="monospace"
-            style="@style/Base.TextAppearance.AppCompat.Large"
-            android:textSize="70dp"
-            android:textIsSelectable="false" />
+            android:format24Hour="hh:mm"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/text_size_sw600"
+            android:typeface="monospace" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <View
-            android:layout_width="match_parent"
-            android:background="@drawable/line"
-            android:layout_height="1dp"
-            android:src="@drawable/line"
-            android:id="@+id/textView"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-                android:layout_alignLeft="@+id/linearLayout2"
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
                 android:layout_alignStart="@+id/linearLayout2"
-                android:layout_alignRight="@+id/linearLayout2"
-                android:layout_alignEnd="@+id/linearLayout2" />
+                android:layout_alignEnd="@+id/linearLayout2"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/line"
+                android:gravity="center"
+                android:src="@drawable/line" />
 
             <LinearLayout
-                android:orientation="horizontal"
+                android:id="@+id/linearLayout2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="clip_horizontal"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:id="@+id/linearLayout2">
+                android:layout_gravity="center_horizontal"
+                android:gravity="clip_horizontal"
+                android:orientation="horizontal">
 
                 <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/t_inside_image"
-            android:src="@drawable/home" />
-
-                <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textColor="#00FFFF"
-            android:textSize="66.5dp"
-            android:id="@+id/t_inside"
-            android:gravity="center"
-                    android:textIsSelectable="true" />
-
-                <ImageView
+                    android:id="@+id/t_inside_image"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:id="@+id/Humidity_image"
-                    android:src="@drawable/hum"/>
+                    android:contentDescription="@string/home"
+                    android:src="@drawable/home" />
 
                 <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textColor="#00FFFF"
-            android:textSize="66.5dp"
-            android:id="@+id/Humidity" />
+                    android:id="@+id/t_inside"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text=""
+                    android:textColor="#FFFFFF"
+                    android:textIsSelectable="true"
+                    android:textSize="@dimen/text_size_sw600" />
+
+                <ImageView
+                    android:id="@+id/Humidity_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/water"
+                    android:src="@drawable/hum" />
+
+                <TextView
+                    android:id="@+id/Humidity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/text_size_sw600" />
 
             </LinearLayout>
 
             <View
-            android:layout_width="wrap_content"
-            android:background="@drawable/line"
-            android:layout_height="1dp"
-            android:src="@drawable/line"
-            android:id="@+id/textView1"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
                 android:layout_below="@+id/linearLayout2"
-                android:layout_alignLeft="@+id/linearLayout2"
                 android:layout_alignStart="@+id/linearLayout2"
-                android:layout_alignRight="@+id/linearLayout2"
-                android:layout_alignEnd="@+id/linearLayout2" />
+                android:layout_alignEnd="@+id/linearLayout2"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/line"
+                android:gravity="center"
+                android:src="@drawable/line" />
 
             <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/linearLayout"
-        android:gravity="center_horizontal"
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/linearLayout2"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true">
+                android:layout_alignParentEnd="true"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/t_outside_image"/>
+                <ImageView
+                    android:id="@+id/t_outside_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/thermometer" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text=""
-            android:textColor="#00FFFF"
-            android:textSize="70dp"
-            android:id="@+id/t_outside" />
+                <TextView
+                    android:id="@+id/t_outside"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text=""
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/text_size_sw600" />
 
-    </LinearLayout>
+            </LinearLayout>
 
             <View
-            android:layout_width="wrap_content"
-            android:background="@drawable/line"
-            android:layout_height="1dp"
-            android:src="@drawable/line"
-            android:id="@+id/textView2"
-                android:gravity="center_horizontal"
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
                 android:layout_below="@+id/linearLayout"
-                android:layout_alignLeft="@+id/textView1"
                 android:layout_alignStart="@+id/textView1"
-                android:layout_alignRight="@+id/textView1"
-                android:layout_alignEnd="@+id/textView1" />
+                android:layout_alignEnd="@+id/textView1"
+                android:background="@drawable/line"
+                android:gravity="center_horizontal"
+                android:src="@drawable/line" />
 
         </RelativeLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
 
             <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:id="@+id/Pressure_image"
-        android:src="@drawable/pres" />
+                android:id="@+id/Pressure_image"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/barometr"
+                android:src="@drawable/pres" />
 
             <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textColor="#00FFFF"
-        android:textSize="70dp"
-        android:id="@+id/Pressure"
-        android:layout_centerHorizontal="true"
-        android:gravity="center_horizontal" />
-
-            <TextView
+                android:id="@+id/Pressure"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="mmHg"
+                android:gravity="center_horizontal"
+                android:text=""
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/text_size_sw600" />
+
+            <TextView
                 android:id="@+id/textView4"
-                android:textSize="43.75dp"
-                android:textColor="#00FFFF" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mmhg"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/text_size_ind_sw600" />
 
         </LinearLayout>
 
-        <com.jjoe64.graphview.GraphView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/graph_Pressure"
-    android:background="@drawable/invizib" />
+        <me.mervap.ai.home.components.InvalidatedGraphView
+            android:id="@+id/graph_Pressure"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/invizib"
+            android:visibility="invisible" />
 
-</LinearLayout>
+    </LinearLayout>
 </LinearLayout>
 

@@ -4,38 +4,47 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:padding="7dp"
-    android:scrollbars="none"
-    android:background="@drawable/dark_wood">
+    android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <com.jjoe64.graphview.GraphView
-            android:layout_width="match_parent"
-            android:layout_height="500dip"
+
+        <me.mervap.ai.home.components.InvalidatedGraphView
             android:id="@+id/graph_t_outside"
-            android:background="@drawable/invizib" />
-        <com.jjoe64.graphview.GraphView
             android:layout_width="match_parent"
             android:layout_height="500dip"
+            android:background="@drawable/invizib"
+            android:visibility="invisible" />
+
+        <me.mervap.ai.home.components.InvalidatedGraphView
             android:id="@+id/graph_Pressure"
-            android:background="@drawable/invizib"/>
-        <com.jjoe64.graphview.GraphView
             android:layout_width="match_parent"
             android:layout_height="500dip"
+            android:background="@drawable/invizib"
+            android:visibility="invisible" />
+
+        <me.mervap.ai.home.components.InvalidatedGraphView
             android:id="@+id/graph_t_inside"
-            android:background="@drawable/invizib"/>
-        <com.jjoe64.graphview.GraphView
             android:layout_width="match_parent"
             android:layout_height="500dip"
+            android:background="@drawable/invizib"
+            android:visibility="invisible" />
+
+        <me.mervap.ai.home.components.InvalidatedGraphView
             android:id="@+id/graph_Humidity"
-            android:background="@drawable/invizib"/>
-        <com.jjoe64.graphview.GraphView
             android:layout_width="match_parent"
             android:layout_height="500dip"
+            android:background="@drawable/invizib"
+            android:visibility="invisible" />
+
+        <me.mervap.ai.home.components.InvalidatedGraphView
             android:id="@+id/graph_Humidity_outside"
-            android:background="@drawable/invizib"/>
+            android:layout_width="match_parent"
+            android:layout_height="500dip"
+            android:background="@drawable/invizib"
+            android:visibility="invisible" />
     </LinearLayout>
 
 </ScrollView>

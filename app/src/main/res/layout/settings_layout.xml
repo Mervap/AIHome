@@ -4,10 +4,10 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:orientation="vertical"
-    android:paddingBottom="5dp"
     android:paddingLeft="10dp"
+    android:paddingTop="5dp"
     android:paddingRight="10dp"
-    android:paddingTop="5dp">
+    android:paddingBottom="5dp">
 
     <TextView
         android:id="@+id/textView"
@@ -17,26 +17,25 @@
         android:layout_weight="1"
         android:gravity="center_horizontal"
         android:text="@string/firstcon"
-        android:textColor="#000000"
         android:textSize="20sp" />
 
     <EditText
         android:id="@+id/domain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
+        android:layout_gravity="end"
         android:layout_weight="1"
+        android:autofillHints=""
         android:ems="10"
-        android:hint="Домен"
+        android:hint="@string/domen"
         android:inputType="textVisiblePassword" />
 
-    <Switch
+    <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/switch_mode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Включить ручной режим"
-        android:textColor="#000000"
+        android:text="@string/enableManualMode"
         android:textSize="20sp" />
 
     <TextView
@@ -44,8 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Подождите..."
-        android:textColor="#000000"
+        android:text="@string/preaseWait"
         android:textSize="20sp" />
 
     <SeekBar
@@ -60,8 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Подождите..."
-        android:textColor="#000000"
+        android:text="@string/preaseWait"
         android:textSize="20sp" />
 
     <SeekBar
@@ -74,10 +71,9 @@
 
     <Button
         android:id="@+id/button"
-        style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:text="Ок" />
+        android:layout_gravity="end"
+        android:text="@string/ok" />
 
 </LinearLayout>

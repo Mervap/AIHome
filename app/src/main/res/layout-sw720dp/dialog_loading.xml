@@ -1,24 +1,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/dark_wood_short">
+    android:background="@drawable/dark_wood_short"
+    android:orientation="horizontal">
 
     <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="20dip"
+        android:layout_marginStart="20dip"
         android:indeterminateDrawable="@drawable/progress_bar"
         android:indeterminateOnly="true" />
 
     <TextView
+        android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:text="Загрузка..."
+        android:text="@string/loading"
         android:textColor="#FFFFFF"
-        android:textSize="72dp"
-        android:id="@+id/textView3" />
+        android:textSize="72sp" />
 
 </LinearLayout>
