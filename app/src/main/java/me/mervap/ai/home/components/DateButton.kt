@@ -14,7 +14,7 @@ data class Date(val year: Int, val month: Int, val day: Int) {
     return calendar
   }
 
-  override fun toString(): String = "$year-$month-$day"
+  override fun toString(): String = "$year-${month + 1}-$day"
 }
 
 fun String.dateTimeToDate(): java.util.Date {
