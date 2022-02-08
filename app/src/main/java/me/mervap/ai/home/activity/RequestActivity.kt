@@ -47,20 +47,20 @@ abstract class RequestActivity : AppCompatActivity() {
     runOnUiThread {
       loadingFragment?.dismiss()
       val builder = AlertDialog.Builder(this)
-      builder.setTitle(getString(R.string.attention_title))
-        .setMessage(getString(R.string.no_serser_connection_message))
+      builder.setTitle(getString(R.string.attentionTitle))
+        .setMessage(getString(R.string.noServerConnection))
         .setCancelable(false)
-        .setPositiveButton(getString(R.string.repeat_rutton)) { dialog, _ ->
+        .setPositiveButton(getString(R.string.repeatButton)) { dialog, _ ->
           dialog.cancel()
           loadData()
         }
-        .setNeutralButton(getString(R.string.settings_button)) { dialog, _ ->
+        .setNeutralButton(getString(R.string.settingsButton)) { dialog, _ ->
           dialog.cancel()
           val manager = supportFragmentManager
           val myDialogFragment = SettingDialog(::client)
           myDialogFragment.show(manager, "SettingDialog")
         }
-        .setNegativeButton(getString(R.string.exit_button)) { dialog, _ ->
+        .setNegativeButton(getString(R.string.exitButton)) { dialog, _ ->
           dialog.cancel()
           exitProcess(0)
         }
@@ -73,14 +73,14 @@ abstract class RequestActivity : AppCompatActivity() {
     runOnUiThread {
       loadingFragment?.dismiss()
       val builder = AlertDialog.Builder(this)
-      builder.setTitle(getString(R.string.attention_title))
-        .setMessage(getString(R.string.no_data_message))
+      builder.setTitle(getString(R.string.attentionTitle))
+        .setMessage(getString(R.string.noData))
         .setCancelable(false)
-        .setPositiveButton(getString(R.string.repeat_rutton)) { dialog, _ ->
+        .setPositiveButton(getString(R.string.repeatButton)) { dialog, _ ->
           dialog.cancel()
           loadData()
         }
-        .setNegativeButton(getString(R.string.exit_button)) { dialog, _ ->
+        .setNegativeButton(getString(R.string.exitButton)) { dialog, _ ->
           dialog.cancel()
           exitProcess(0)
         }

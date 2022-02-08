@@ -28,7 +28,7 @@ class BuildingGraphsForCustomPeriod : BuildingGraphs() {
   override fun onRequestFailure() {
     runOnUiThread {
       loadingFragment?.dismiss()
-      Toast.makeText(this, getString(R.string.do_data_for_period), Toast.LENGTH_LONG).show()
+      Toast.makeText(this, getString(R.string.noDataForPeriod), Toast.LENGTH_LONG).show()
     }
   }
 
@@ -65,7 +65,7 @@ class BuildingGraphsForCustomPeriod : BuildingGraphs() {
       loadData()
     }
     else {
-      Toast.makeText(this, getString(R.string.bad_interval), Toast.LENGTH_LONG).show()
+      Toast.makeText(this, getString(R.string.badInterval), Toast.LENGTH_LONG).show()
     }
   }
 

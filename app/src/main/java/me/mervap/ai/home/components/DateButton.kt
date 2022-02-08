@@ -36,7 +36,7 @@ class DateButton : AppCompatButton {
     }
     set(value) {
       val (year, month, day) = value
-      text = resources.getString(R.string.date, day, MOUNTS[month], year)
+      text = resources.getString(R.string.buttonDate, day, MOUNTS[month], year)
     }
 }
 

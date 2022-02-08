@@ -1,198 +1,48 @@
 <resources>
     <string name="app_name">AI Home</string>
-    <string name="button_graphs_last24">Отобразить данные за последние сутки</string>
-    <string name="action_build_graphs_for_custom_period">График за произвольный период</string>
-    <string name="action_build_last_24_hour">График за последние сутки</string>
-    <string name="button_graphs_for_custom_period">Отобразить данные за период…</string>
-    <string name="display_graphs_for_custom_period">Отобразить</string>
-    <string name="now">Сейчас</string>
-    <string name="textFrom">От</string>
-    <string name="textTo">До</string>
-    <string name="main_flat">Положение заслонок в гараже: %1$d</string>
-    <string name="room_flat">Положение заслонок в комнате: %1$d</string>
-    <string name="celcium">%1$.1f°C</string>
-    <string name="persentage">%1$.1f%%</string>
-
-    <string name="firstcon">Для запуска необходимо ввести домен</string>
-    <string name="settings">Настройки</string>
-    <string name="all_good">Данные успешно обновлены</string>
-
-    <string name="waiting">Пожалуйста подождите…</string>
-    <string name="ok">Ок</string>
-    <string name="domen">Домен</string>
-    <string name="enableManualMode">Включить ручной режим</string>
-    <string name="preaseWait">Подождите…</string>
-    <string name="mmhg">mmHg</string>
-    <string name="from">От</string>
-    <string name="to">До</string>
-    <string name="loading">Загрузка…</string>
     <string name="forLastDay">За сутки</string>
     <string name="forPeriod">За период</string>
-    <string name="date">%1$d %2$s %3$d</string>
-    <string name="home_temperature_title">Температура в доме</string>
-    <string name="celsium_ed">°C</string>
-    <string name="temperature_outside_title">Температура на улице</string>
-    <string name="pressure_title">Давление</string>
-    <string name="pressure_ed">мм.рт.ст.</string>
-    <string name="just_persentage">%</string>
-    <string name="huminity_outside_title">Влажность на улице</string>
-    <string name="humidity_inside_title">Влажность в гараже</string>
-    <string name="humidity_legend">Влажность</string>
-    <string name="main_vent_legend">Гараж</string>
-    <string name="room_vent_legend">Комната</string>
-    <string name="degree">°</string>
-    <string name="do_data_for_period">Отсутствуют данные за данный период, выберите другой интервал</string>
-    <string name="bad_interval">Интервал задан некорректно</string>
-    <string name="attention_title">Внимание!</string>
-    <string name="no_serser_connection_message">Нет соединения с сервером, попробуйте позже.</string>
-    <string name="repeat_rutton">Повторить</string>
-    <string name="settings_button">Настройки</string>
-    <string name="exit_button">Выход</string>
-    <string name="no_data_message">Отсутствуют данные, попробуйте позже</string>
-    <string name="cant_get_data_settings">Не удается получить данные</string>
 
-    <string-array name="Years">
-        <item>2015</item>
-        <item>2014</item>
-    </string-array>
-    <string-array name="Mounths">
-        <item>Январь</item>
-        <item>Февраль</item>
-        <item>Март</item>
-        <item>Апрель</item>
-        <item>Май</item>
-        <item>Июнь</item>
-        <item>Июль</item>
-        <item>Август</item>
-        <item>Сентябрь</item>
-        <item>Октябрь</item>
-        <item>Ноябрь</item>
-        <item>Декабрь</item>
-    </string-array>
-    <string-array name="Days31">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
-        <item>7</item>
-        <item>8</item>
-        <item>9</item>
-        <item>10</item>
-        <item>11</item>
-        <item>12</item>
-        <item>13</item>
-        <item>14</item>
-        <item>15</item>
-        <item>16</item>
-        <item>17</item>
-        <item>18</item>
-        <item>19</item>
-        <item>20</item>
-        <item>21</item>
-        <item>22</item>
-        <item>23</item>
-        <item>24</item>
-        <item>25</item>
-        <item>26</item>
-        <item>27</item>
-        <item>28</item>
-        <item>29</item>
-        <item>30</item>
-        <item>31</item>
-    </string-array>
-    <string-array name="Days30">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
-        <item>7</item>
-        <item>8</item>
-        <item>9</item>
-        <item>10</item>
-        <item>11</item>
-        <item>12</item>
-        <item>13</item>
-        <item>14</item>
-        <item>15</item>
-        <item>16</item>
-        <item>17</item>
-        <item>18</item>
-        <item>19</item>
-        <item>20</item>
-        <item>21</item>
-        <item>22</item>
-        <item>23</item>
-        <item>24</item>
-        <item>25</item>
-        <item>26</item>
-        <item>27</item>
-        <item>28</item>
-        <item>29</item>
-        <item>30</item>
-    </string-array>
-    <string-array name="Days29">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
-        <item>7</item>
-        <item>8</item>
-        <item>9</item>
-        <item>10</item>
-        <item>11</item>
-        <item>12</item>
-        <item>13</item>
-        <item>14</item>
-        <item>15</item>
-        <item>16</item>
-        <item>17</item>
-        <item>18</item>
-        <item>19</item>
-        <item>20</item>
-        <item>21</item>
-        <item>22</item>
-        <item>23</item>
-        <item>24</item>
-        <item>25</item>
-        <item>26</item>
-        <item>27</item>
-        <item>28</item>
-        <item>29</item>
-    </string-array>
-    <string-array name="Days28">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
-        <item>7</item>
-        <item>8</item>
-        <item>9</item>
-        <item>10</item>
-        <item>11</item>
-        <item>12</item>
-        <item>13</item>
-        <item>14</item>
-        <item>15</item>
-        <item>16</item>
-        <item>17</item>
-        <item>18</item>
-        <item>19</item>
-        <item>20</item>
-        <item>21</item>
-        <item>22</item>
-        <item>23</item>
-        <item>24</item>
-        <item>25</item>
-        <item>26</item>
-        <item>27</item>
-        <item>28</item>
-    </string-array>
+    <string name="celsius">%1$.1f°C</string>
+    <string name="percentage">%1$d%%</string>
+    <string name="pressureUnits">мм.рт.ст.</string>
+    <string name="mmhg">mmHg</string>
+
+    <string name="repeatButton">Повторить</string>
+    <string name="settingsButton">Настройки</string>
+    <string name="exitButton">Выход</string>
+
+    <string name="settingsTitle">Настройки</string>
+    <string name="domainHint">Домен</string>
+    <string name="enableManualMode">Включить ручной режим</string>
+    <string name="pleaseWaitMessage">Подождите…</string>
+    <string name="loadingMessage">Загрузка…</string>
+    <string name="mainFlat">Положение заслонок в гараже: %1$d</string>
+    <string name="roomFlat">Положение заслонок в комнате: %1$d</string>
+    <string name="okButton">Ок</string>
+
+    <string name="displayGraphsForCustomPeriod">Отобразить</string>
+    <string name="from">От</string>
+    <string name="to">До</string>
+    <string name="buttonDate">%1$d %2$s %3$d</string>
+
+    <string name="homeTemperatureTitle">Температура в доме</string>
+    <string name="temperatureOutsideTitle">Температура на улице</string>
+    <string name="pressureTitle">Давление</string>
+    <string name="humidityInsideTitle">Влажность в гараже</string>
+    <string name="humidityOutsideTitle">Влажность на улице</string>
+    <string name="humidityLegend">Влажность</string>
+    <string name="mainFlatLegend">Гараж</string>
+    <string name="roomFlatLegend">Комната</string>
+
+    <string name="celsiusUnits">°C</string>
+    <string name="justPercentage">%</string>
+    <string name="degreeUnits">°</string>
+
+    <string name="noData">Отсутствуют данные, попробуйте позже</string>
+    <string name="noDataForPeriod">Отсутствуют данные за данный период, выберите другой интервал</string>
+    <string name="noServerConnection">Нет соединения с сервером, попробуйте позже.</string>
+    <string name="badInterval">Интервал задан некорректно</string>
+    <string name="attentionTitle">Внимание!</string>
+    <string name="noDataSettings">Не удается получить данные</string>
 </resources>

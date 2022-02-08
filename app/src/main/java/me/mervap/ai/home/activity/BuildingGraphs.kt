@@ -46,8 +46,8 @@ abstract class BuildingGraphs : RequestActivity() {
         data,
         FullInfo::tInside,
         Color.RED,
-        getString(R.string.home_temperature_title),
-        getString(R.string.celsium_ed),
+        getString(R.string.homeTemperatureTitle),
+        getString(R.string.celsiusUnits),
         InvalidatedGraphView::configureTInsideGraph
       )
 
@@ -60,8 +60,8 @@ abstract class BuildingGraphs : RequestActivity() {
         data,
         FullInfo::tOutside,
         -0xFF8834,
-        getString(R.string.temperature_outside_title),
-        getString(R.string.celsium_ed),
+        getString(R.string.temperatureOutsideTitle),
+        getString(R.string.celsiusUnits),
         InvalidatedGraphView::configureTOutsideGraph
       )
       graphPressure.addSeries(
@@ -69,8 +69,8 @@ abstract class BuildingGraphs : RequestActivity() {
         data,
         FullInfo::pressure,
         Color.MAGENTA,
-        getString(R.string.pressure_title),
-        getString(R.string.pressure_ed),
+        getString(R.string.pressureTitle),
+        getString(R.string.pressureUnits),
         InvalidatedGraphView::configurePressureGraph
       )
       graphHumidityOutside.addSeries(
@@ -78,8 +78,8 @@ abstract class BuildingGraphs : RequestActivity() {
         data,
         FullInfo::humidityOutside,
         Color.YELLOW,
-        getString(R.string.huminity_outside_title),
-        getString(R.string.just_persentage),
+        getString(R.string.humidityOutsideTitle),
+        getString(R.string.justPercentage),
         InvalidatedGraphView::configureOutsideHumidityGraph
       )
 
@@ -88,18 +88,18 @@ abstract class BuildingGraphs : RequestActivity() {
         data,
         FullInfo::humidity,
         Color.GREEN,
-        getString(R.string.humidity_inside_title),
-        getString(R.string.just_persentage),
+        getString(R.string.humidityInsideTitle),
+        getString(R.string.justPercentage),
         InvalidatedGraphView::configureHumidityGraph
       )
 
-      humiditySeries.title = getString(R.string.humidity_legend)
+      humiditySeries.title = getString(R.string.humidityLegend)
       graphHumidity.addSecondSeries(
         dates, data,
         listOf(FullInfo::mainVentFlap, FullInfo::roomVentFlap),
         listOf(Color.WHITE, Color.CYAN),
-        listOf(getString(R.string.main_vent_legend), getString(R.string.room_vent_legend)),
-        listOf(getString(R.string.degree), getString(R.string.degree))
+        listOf(getString(R.string.mainFlatLegend), getString(R.string.roomFlatLegend)),
+        listOf(getString(R.string.degreeUnits), getString(R.string.degreeUnits))
       )
       onGraphConfigured()
     }

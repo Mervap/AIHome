@@ -25,6 +25,7 @@ import me.mervap.ai.home.http.WeatherInfo
 import me.mervap.ai.home.http.client
 import retrofit2.await
 import java.util.*
+import kotlin.math.roundToInt
 
 class MainActivity : RequestActivity() {
   private lateinit var layoutVisibility: LinearLayout
@@ -129,10 +130,10 @@ class MainActivity : RequestActivity() {
 
         val currentData = currentDataResponse.data
 
-        tOutsideText.text = getString(R.string.celcium, currentData.tOutside)
-        tInsideText.text = getString(R.string.celcium, currentData.tInside)
+        tOutsideText.text = getString(R.string.celsius, currentData.tOutside)
+        tInsideText.text = getString(R.string.celsius, currentData.tInside)
         pressureText.text = currentData.pressure.toString()
-        humidityText.text = getString(R.string.persentage, currentData.humidity)
+        humidityText.text = getString(R.string.percentage, currentData.humidity.roundToInt())
 
         setThermometerByTemperature(currentData.tOutside)
       }
@@ -162,7 +163,7 @@ class MainActivity : RequestActivity() {
 
         pressureSeries.setOnDataPointTapListener(this,
           Toast.LENGTH_SHORT,
-          getString(R.string.pressure_ed))
+          getString(R.string.pressureUnits))
         pressureGraph.visibility = View.VISIBLE
       }
     }

@@ -22,7 +22,6 @@ import me.mervap.ai.home.http.*
 import retrofit2.await
 
 class SettingDialog(val client: (String) -> DataAPI) : DialogFragment() {
-  private lateinit var textView: TextView
   private lateinit var textMainVentFlap: TextView
   private lateinit var textRoomVentFlap: TextView
   private lateinit var seekbarMain: SeekBar
@@ -44,25 +43,22 @@ class SettingDialog(val client: (String) -> DataAPI) : DialogFragment() {
     val editDomain = view.findViewById<EditText>(R.id.domain)
     editDomain.setText(domain)
 
-    textView = view.findViewById(R.id.textView)
     textMainVentFlap = view.findViewById(R.id.text_main_vent_flap)
     textRoomVentFlap = view.findViewById(R.id.text_room_vent_flap)
     seekbarMain = view.findViewById(R.id.seekBar_main)
     seekbarRoom = view.findViewById(R.id.seekBar_room)
     switchMode = view.findViewById(R.id.switch_mode)
 
-    textView.text = getString(R.string.settings)
-
     seekbarMain.setOnSeekBarChangeListener(object : DefaultOnSeekBarChangeListener() {
       override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
         textMainVentFlap.text =
-          getString(R.string.main_flat, seekBar.progress * 5)
+          getString(R.string.mainFlat, seekBar.progress * 5)
       }
     })
     seekbarRoom.setOnSeekBarChangeListener(object : DefaultOnSeekBarChangeListener() {
       override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
         textRoomVentFlap.text =
-          getString(R.string.room_flat, seekBar.progress * 5)
+          getString(R.string.roomFlat, seekBar.progress * 5)
       }
     })
 
@@ -90,8 +86,8 @@ class SettingDialog(val client: (String) -> DataAPI) : DialogFragment() {
               mutex.withLock {
                 done = true
                 requireActivity().runOnUiThread {
-                  textMainVentFlap.text = getString(R.string.cant_get_data_settings)
-                  textRoomVentFlap.text = getString(R.string.cant_get_data_settings)
+                  textMainVentFlap.text = getString(R.string.noDataSettings)
+                  textRoomVentFlap.text = getString(R.string.noDataSettings)
                 }
               }
             }
@@ -107,8 +103,8 @@ class SettingDialog(val client: (String) -> DataAPI) : DialogFragment() {
         mutex.withLock {
           if (!done) {
             requireActivity().runOnUiThread {
-              textMainVentFlap.text = getString(R.string.preaseWait)
-              textRoomVentFlap.text = getString(R.string.preaseWait)
+              textMainVentFlap.text = getString(R.string.pleaseWaitMessage)
+              textRoomVentFlap.text = getString(R.string.pleaseWaitMessage)
             }
           }
         }
@@ -125,7 +121,6 @@ class SettingDialog(val client: (String) -> DataAPI) : DialogFragment() {
 
     val okButton = view.findViewById<Button>(R.id.button)
     okButton.setOnClickListener {
-      textView.text = getString(R.string.waiting)
       triggerMode = if (switchMode.isChecked) 1 else 0
       mainProgress = seekbarMain.progress * 5
       roomProgress = seekbarRoom.progress * 5
@@ -154,8 +149,8 @@ class SettingDialog(val client: (String) -> DataAPI) : DialogFragment() {
 
     seekbarMain.progress = mainProgress
     seekbarRoom.progress = roomProgress
-    textMainVentFlap.text = getString(R.string.main_flat, mainProgress * 5)
-    textRoomVentFlap.text = getString(R.string.room_flat, roomProgress * 5)
+    textMainVentFlap.text = getString(R.string.mainFlat, mainProgress * 5)
+    textRoomVentFlap.text = getString(R.string.roomFlat, roomProgress * 5)
   }
 
   private suspend fun getSettings(

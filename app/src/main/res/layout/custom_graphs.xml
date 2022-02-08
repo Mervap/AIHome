@@ -100,7 +100,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:onClick="buildCustomGraphs"
-            android:text="@string/display_graphs_for_custom_period"
+            android:text="@string/displayGraphsForCustomPeriod"
             android:textSize="15sp" />
 
         <me.mervap.ai.home.components.InvalidatedGraphView

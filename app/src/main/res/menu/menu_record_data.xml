@@ -4,7 +4,7 @@
     tools:context=".activity.MainActivity">
     <item
         android:id="@+id/my_settings"
-        android:title="@string/settings"
+        android:title="@string/settingsTitle"
         android:orderInCategory="100"
         app:showAsAction="ifRoom"
         android:icon="@drawable/settings_pic" />
