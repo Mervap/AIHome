@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@drawable/dark_wood"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/frameLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:paddingHorizontal="22dp"
+            android:text="@string/Mode"
+            android:textSize="@dimen/text_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+
+        <TextView
+            android:id="@+id/auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:text="@string/auto"
+            android:paddingStart="50dp"
+            android:paddingVertical="17dp"
+            android:textSize="@dimen/text_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switchStatus"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingEnd="50dp"
+            android:paddingVertical="17dp"
+            android:layout_gravity="center"
+            tools:layout_editor_absoluteX="204dp"
+            tools:layout_editor_absoluteY="48dp" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="400dp">
+
+        <TimePicker
+            android:id="@+id/beginTime"
+            android:layout_width="230dp"
+            android:layout_height="120dp"
+            android:layout_marginVertical="80dp"
+
+            android:paddingVertical="5dp"
+            android:timePickerMode="spinner" />
+
+        <TimePicker
+            android:id="@+id/endTime"
+            android:layout_width="230dp"
+            android:layout_height="120dp"
+            android:layout_marginVertical="200dp"
+            android:timePickerMode="spinner" />
+
+        <Button
+            android:id="@+id/inputBeginTime"
+            android:layout_width="140dp"
+            android:layout_height="80dp"
+            android:layout_marginHorizontal="230dp"
+            android:layout_marginVertical="160dp"
+            android:text="@string/change"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayout4"
+        android:layout_width="match_parent"
+        android:layout_height="170dp">
+
+        <Button
+            android:id="@+id/open"
+            android:layout_width="140dp"
+            android:layout_height="80dp"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginVertical="45dp"
+            android:text="@string/jalousie_open"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/closed"
+            android:layout_width="140dp"
+            android:layout_height="80dp"
+            android:layout_marginHorizontal="230dp"
+            android:layout_marginVertical="45dp"
+            android:text="@string/jalousie_close"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:text="@string/infoAboutKey"
+            android:layout_marginVertical="150dp"
+            android:layout_marginHorizontal="1dp"
+            android:textColor="#f50029"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </FrameLayout>
+
+</LinearLayout>

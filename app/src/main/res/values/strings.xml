@@ -45,4 +45,14 @@
     <string name="badInterval">Интервал задан некорректно</string>
     <string name="attentionTitle">Внимание!</string>
     <string name="noDataSettings">Не удается получить данные</string>
+
+    <string name="jalousie">Жалюзи</string>
+    <string name="jalousie_open">Открыть</string>
+    <string name="jalousie_close">Закрыть</string>
+    <string name="beginTimeHint">С какого времени</string>
+    <string name="endTimeHint">По какое время</string>
+    <string name="change">Изменить</string>
+    <string name="infoAboutKey">Ключ действителен до 07.05.2022</string>
+    <string name="auto">Авто</string>
+    <string name="Mode">Режим</string>
 </resources>

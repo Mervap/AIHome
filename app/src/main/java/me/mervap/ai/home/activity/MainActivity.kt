@@ -68,13 +68,18 @@ class MainActivity : RequestActivity() {
         true
       }
       R.id.action_build_graphs_for_custom_period -> {
-        intent = Intent(this, BuildingGraphsForCustomPeriod::class.java)
+        val intent = Intent(this, BuildingGraphsForCustomPeriod::class.java)
         startActivity(intent)
         true
       }
       R.id.my_settings -> {
         val myDialogFragment = SettingDialog(::client)
         myDialogFragment.show(supportFragmentManager, "SettingDialog")
+        true
+      }
+      R.id.jalousie -> {
+        val intent = Intent(this, JalousieActivity::class.java)
+        startActivity(intent)
         true
       }
       else -> super.onOptionsItemSelected(item)
@@ -151,9 +156,11 @@ class MainActivity : RequestActivity() {
       val dates = pressureData.map { it.dateTime.dateTimeToDate() }
       val dateMin = dates.first()
       val dateMax = dates.last()
-      val (pressureMin, pressureMax, pressureSeries) = extractSeries(dates,
+      val (pressureMin, pressureMax, pressureSeries) = extractSeries(
+        dates,
         pressureData,
-        PressureInfo::pressure)
+        PressureInfo::pressure
+      )
       pressureSeries.color = Color.MAGENTA
 
       runOnUiThread {
@@ -161,13 +168,14 @@ class MainActivity : RequestActivity() {
         pressureGraph.configurePressureGraph(dateMin, dateMax, pressureMin, pressureMax)
         pressureGraph.addSeries(pressureSeries)
 
-        pressureSeries.setOnDataPointTapListener(this,
+        pressureSeries.setOnDataPointTapListener(
+          this,
           Toast.LENGTH_SHORT,
-          getString(R.string.pressureUnits))
+          getString(R.string.pressureUnits)
+        )
         pressureGraph.visibility = View.VISIBLE
       }
-    }
-    catch (e: Exception) {
+    } catch (e: Exception) {
       e.printStackTrace()
       showNoConnectionDialog()
     }

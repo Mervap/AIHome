@@ -5,19 +5,25 @@
     <item
         android:id="@+id/my_settings"
         android:title="@string/settingsTitle"
-        android:orderInCategory="100"
+        android:orderInCategory="101"
         app:showAsAction="ifRoom"
         android:icon="@drawable/settings_pic" />
     <item
         android:id="@+id/action_build_last_24_hour"
+        android:icon="@drawable/day"
+        android:orderInCategory="102"
         android:title="@string/forLastDay"
-        android:orderInCategory="101"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/day" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_build_graphs_for_custom_period"
-        android:title="@string/forPeriod"
+        android:icon="@drawable/graph"
         android:orderInCategory="101"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/graph" />
+        android:title="@string/forPeriod"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/jalousie"
+        android:icon="@drawable/jalousie"
+        android:orderInCategory="99"
+        android:title="@string/jalousie"
+        app:showAsAction="ifRoom" />
 </menu>

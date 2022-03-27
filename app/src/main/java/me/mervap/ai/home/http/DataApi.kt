@@ -6,6 +6,7 @@ import androidx.preference.PreferenceManager
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
@@ -19,6 +20,7 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.http.GET
 import retrofit2.http.Query
+import java.sql.Time
 
 fun SharedPreferences.baseUrl(): String {
   return getString("url", "") ?: ""
@@ -52,6 +54,21 @@ interface DataAPI {
 
   @GET("/meteo2/get_data.php")
   fun getData(): Call<Result<WeatherInfo>>
+
+  @GET("/meteo2/get_jalousie.php")
+  fun getJalousie(): Call<Result<JalousieInfo>>
+
+  @GET("/meteo2/jalousie_modes.php")
+  fun putJalousie(
+    @Query("mode") mode: Mode,
+    @Query("status") status: Status,
+  ): Call<Unit>
+
+  @GET("/meteo2/updateTime.php")
+  fun updateTime(
+    @Query("beginTime") beginTime: String,
+    @Query("endTime") endTime: String
+  ): Call<Unit>
 
   @GET("/meteo2/get_pressure_data.php")
   fun getPressureData(): Call<Result<List<PressureInfo>>>
@@ -89,6 +106,38 @@ data class WeatherInfo(
   val pressure: Double,
   val humidity: Double,
 )
+
+@Serializable
+data class JalousieInfo(
+  val status: Status,
+  val mode: Mode,
+  val beginTime: String,
+  val endTime: String
+)
+
+@Serializable
+enum class Mode {
+  @SerialName("auto")
+  AUTO,
+  @SerialName("manual")
+  MANUAL;
+
+  override fun toString(): String {
+    return super.toString().lowercase()
+  }
+}
+
+@Serializable
+enum class Status {
+  @SerialName("closed")
+  CLOSED,
+  @SerialName("open")
+  OPEN;
+
+  override fun toString(): String {
+    return super.toString().lowercase()
+  }
+}
 
 @Serializable
 data class PressureInfo(val dateTime: String, val pressure: Double)
