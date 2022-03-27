@@ -13,8 +13,8 @@ android {
     applicationId = "me.mervap.ai.home"
     minSdk = 26
     targetSdk = 32
-    versionCode = 4
-    versionName = "2.0.2"
+    versionCode = 5
+    versionName = "2.1.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
