@@ -7,14 +7,15 @@ plugins {
 }
 
 android {
-  compileSdk = 32
+  namespace = "me.mervap.ai.home"
+  compileSdk = 34
 
   defaultConfig {
     applicationId = "me.mervap.ai.home"
     minSdk = 26
-    targetSdk = 32
-    versionCode = 6
-    versionName = "2.1.1"
+    targetSdk = 34
+    versionCode = 8
+    versionName = "2.1.3"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -39,7 +40,7 @@ android {
     jvmTarget = "1.8"
   }
 
-  packagingOptions {
+  packaging {
     resources.pickFirsts.add("META-INF/*")
   }
 }
